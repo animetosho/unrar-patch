@@ -6,3 +6,17 @@ UnRAR also includes AES acceleration code for ARM, but it isn’t enabled by def
 The [releases page](https://github.com/animetosho/unrar-patch/releases) hosts MacOS and static Linux builds for x64/ARM64 platforms.
 
 See [the original UnRAR page](https://www.rarlab.com/rar_add.htm) for more info on UnRAR.
+
+### Building
+
+If you prefer, you can build this patched unrar with the following commands:
+
+```
+wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
+tar zxf unrarsrc-6.2.10.tar.gz
+cd unrar
+patch -s -p1 < ../unrar-gcc.patch
+#sed -i 's/^CXXFLAGS=/CXXFLAGS=-std=c++11 /' makefile  # if build otherwise fails
+make
+```
+

@@ -93,6 +93,14 @@ jobs:
           CXX: oa64-clang++
           AR: arm64-apple-darwin21.4-ar
           STRIP: arm64-apple-darwin21.4-strip
+      - run: |
+          wget -q -O- https://github.com/indygreg/apple-platform-rs/releases/download/apple-codesign%2F0.22.0/apple-codesign-0.22.0-x86_64-unknown-linux-musl.tar.gz | tar zxf -
+          apple-codesign*/rcodesign sign unrar/unrar
+      - if: ${{ failure() }}
+        run: |
+          ls
+          ls apple-codesign*
+          find . -name rcodesign
       - uses: actions/upload-artifact@v3
         with:
           path: unrar/unrar
