@@ -1,0 +1,122 @@
+# apply with `patch -s -p1 < unrar-gcc.patch` in unrar 6.2.6 source directory
+--- a/blake2s.cpp
++++ b/blake2s.cpp
+@@ -18,7 +18,7 @@
+   0x510E527FUL, 0x9B05688CUL, 0x1F83D9ABUL, 0x5BE0CD19UL
+ };
+ 
+-static const byte blake2s_sigma[10][16] =
++const byte blake2s_sigma[10][16] =
+ {
+   {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 } ,
+   { 14, 10,  4,  8,  9, 15, 13,  6,  1, 12,  0,  2, 11,  7,  5,  3 } ,
+--- a/blake2s_sse.cpp
++++ b/blake2s_sse.cpp
+@@ -10,6 +10,7 @@
+ static __m128i crotr8, crotr16;
+ #endif
+ 
++TARGET_FUNC("sse2")
+ static void blake2s_init_sse()
+ {
+   // We cannot initialize these 128 bit variables in place when declaring
+@@ -100,7 +101,11 @@
+   UNDIAGONALIZE(row[0],row[1],row[2],row[3]); \
+ }
+ 
+-
++#ifdef _WIN_64
++TARGET_FUNC("ssse3")
++#else
++TARGET_FUNC("sse2")
++#endif
+ static int blake2s_compress_sse( blake2s_state *S, const byte block[BLAKE2S_BLOCKBYTES] )
+ {
+   __m128i row[4];
+--- a/rar.hpp
++++ b/rar.hpp
+@@ -1,6 +1,43 @@
+ #ifndef _RAR_RARCOMMON_
+ #define _RAR_RARCOMMON_
+ 
++#ifdef __GNUC__
++#define TARGET_FUNC(t) __attribute__((target(t)))
++#else
++#define TARGET_FUNC(t)
++#endif
++#if defined(__i386__) || defined(__x86_64__) || defined(__amd64__)
++#define USE_SSE
++#define SSE_ALIGNMENT 16
++#include <x86intrin.h>
++#define __cpuid(ar, eax) __asm__("cpuid\n" : "=a"(ar[0]), "=b"(ar[1]), "=c"(ar[2]), "=d"(ar[3]) : "a"(eax) : )
++// needed for blake2s_sse
++#if defined(__x86_64__) || defined(__amd64__)
++#define _WIN_64
++#else
++#define _WIN_32
++#endif
++#endif
++#if defined(__aarch64__) || defined(__armv7__) || defined(__arm__) || (defined(__ARM_ARCH) && __ARM_ARCH >= 6)
++#ifdef __has_include
++#if __has_include(<sys/auxv.h>) && __has_include(<arm_neon.h>)
++#define USE_NEON
++#include <sys/auxv.h>
++#ifdef __FreeBSD__
++static unsigned long getauxval(unsigned long cap) {
++	unsigned long ret;
++	elf_aux_info(cap, &ret, sizeof(ret));
++	return ret;
++}
++#endif
++#if __has_include(<asm/hwcap.h>)
++#include <asm/hwcap.h>
++#endif
++#include <arm_neon.h>
++#endif
++#endif
++#endif
++
+ #include "raros.hpp"
+ #include "rartypes.hpp"
+ #include "os.hpp"
+--- a/rijndael.hpp
++++ b/rijndael.hpp
+@@ -13,17 +13,26 @@
+ { 
+   private:
+ #ifdef USE_SSE
++    TARGET_FUNC("aes")
+     void blockEncryptSSE(const byte *input,size_t numBlocks,byte *outBuffer);
++    TARGET_FUNC("aes")
+     void blockDecryptSSE(const byte *input, size_t numBlocks, byte *outBuffer);
+ 
+     bool AES_NI;
+ #endif
+ #ifdef USE_NEON
+     // Set "crypto" attribute as replacement of -march=armv8-a+crypto switch.
+-    __attribute__((target("crypto")))
++#ifdef __clang__
++    TARGET_FUNC("crypto")
+     void blockEncryptNeon(const byte *input,size_t numBlocks,byte *outBuffer);
+-    __attribute__((target("crypto")))
++    TARGET_FUNC("crypto")
+     void blockDecryptNeon(const byte *input, size_t numBlocks, byte *outBuffer);
++#else
++    TARGET_FUNC("arch=armv8-a+crypto")
++    void blockEncryptNeon(const byte *input,size_t numBlocks,byte *outBuffer);
++    TARGET_FUNC("arch=armv8-a+crypto")
++    void blockDecryptNeon(const byte *input, size_t numBlocks, byte *outBuffer);
++#endif
+ 
+     bool AES_Neon;
+ #endif
+--- a/rs16.hpp
++++ b/rs16.hpp
+@@ -17,6 +17,7 @@
+     void InvertDecoderMatrix();
+ 
+ #ifdef USE_SSE
++    TARGET_FUNC("ssse3")
+     bool SSE_UpdateECC(uint DataNum, uint ECCNum, const byte *Data, byte *ECC, size_t BlockSize);
+ #endif
+ 
