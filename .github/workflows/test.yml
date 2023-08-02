@@ -59,7 +59,7 @@ jobs:
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i .old 's/^CXXFLAGS=/CXXFLAGS=-std=c++11 /' makefile
-          sed -i '/$(STRIP) /d' makefile
+          sed -i .old '/$(STRIP) /d' makefile
           make
       - run: ./unrar/unrar
       - uses: actions/upload-artifact@v3
