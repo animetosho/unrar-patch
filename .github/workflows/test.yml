@@ -36,10 +36,9 @@ jobs:
           STRIP: ${{ steps.musl.outputs.path }}/${{ matrix.target }}-strip
       - run: ./unrar/unrar
         if: ${{ matrix.arch == 'amd64' }}
-      - run: mv unrar/unrar unrar
       - uses: actions/upload-artifact@v3
         with:
-          path: ./unrar
+          path: unrar/unrar
           name: unrar-linux-${{ matrix.arch }}
           retention-days: 5
 
@@ -57,10 +56,9 @@ jobs:
           sed -i -E '/(STRIP) /d' makefile
           make
       - run: ./unrar/unrar
-      - run: mv unrar/unrar unrar
       - uses: actions/upload-artifact@v3
         with:
-          path: ./unrar
+          path: unrar/unrar
           name: unrar-macos-x64
           retention-days: 5
 
@@ -86,9 +84,8 @@ jobs:
           CXX: oa64-clang++
           AR: arm64-apple-darwin21.4-ar
           STRIP: arm64-apple-darwin21.4-strip
-      - run: mv unrar/unrar unrar
       - uses: actions/upload-artifact@v3
         with:
-          path: ./unrar
+          path: unrar/unrar
           name: unrar-macos-arm64
           retention-days: 5
