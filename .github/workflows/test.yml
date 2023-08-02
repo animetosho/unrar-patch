@@ -21,12 +21,15 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
-          tar zxf unrarsrc-6.2.10.tar.gz
+          VER=`curl https://www.rarlab.com/rar_add.htm | grep -F '>UnRAR source<' | sed -E 's/^.*href="rar\/(unrarsrc-[0-9.]+\.tar\.gz)".*$/\1/'`
+          #VER=unrarsrc-6.2.10.tar.gz
+          echo $VER
+          wget https://www.rarlab.com/rar/$VER
+          tar zxf $VER
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i -E '/^(CXX|STRIP|AR)=/d' makefile
-          sed -i -E '/(STRIP) /d' makefile
+          sed -i '/$(STRIP) /d' makefile
           sed -i 's/^LDFLAGS=/LDFLAGS=-static /' makefile
           sed -i 's/^CXXFLAGS=/CXXFLAGS=-std=c++11 /' makefile
           make
@@ -48,12 +51,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
-          tar zxf unrarsrc-6.2.10.tar.gz
+          VER=`curl https://www.rarlab.com/rar_add.htm | grep -F '>UnRAR source<' | sed -E 's/^.*href="rar\/(unrarsrc-[0-9.]+\.tar\.gz)".*$/\1/'`
+          #VER=unrarsrc-6.2.10.tar.gz
+          echo $VER
+          wget https://www.rarlab.com/rar/$VER
+          tar zxf $VER
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i .old 's/^CXXFLAGS=/CXXFLAGS=-std=c++11 /' makefile
-          sed -i -E '/(STRIP) /d' makefile
+          sed -i '/$(STRIP) /d' makefile
           make
       - run: ./unrar/unrar
       - uses: actions/upload-artifact@v3
@@ -72,13 +78,16 @@ jobs:
           osx-version: "12.3"
       - uses: actions/checkout@v3
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
-          tar zxf unrarsrc-6.2.10.tar.gz
+          VER=`curl https://www.rarlab.com/rar_add.htm | grep -F '>UnRAR source<' | sed -E 's/^.*href="rar\/(unrarsrc-[0-9.]+\.tar\.gz)".*$/\1/'`
+          #VER=unrarsrc-6.2.10.tar.gz
+          echo $VER
+          wget https://www.rarlab.com/rar/$VER
+          tar zxf $VER
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i -E '/^(CXX|STRIP|AR)=/d' makefile
           sed -i 's/^CXXFLAGS=/CXXFLAGS=-std=c++11 /' makefile
-          sed -i -E '/(STRIP) /d' makefile
+          sed -i '/$(STRIP) /d' makefile
           make
         env:
           CXX: oa64-clang++
