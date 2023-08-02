@@ -21,8 +21,8 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.9.tar.gz
-          tar zxf unrarsrc-6.2.9.tar.gz
+          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
+          tar zxf unrarsrc-6.2.10.tar.gz
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i -E '/^(CXX|STRIP|AR)=/d' makefile
@@ -48,8 +48,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.9.tar.gz
-          tar zxf unrarsrc-6.2.9.tar.gz
+          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
+          tar zxf unrarsrc-6.2.10.tar.gz
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i .old 's/^CXXFLAGS=/CXXFLAGS=-std=c++11 /' makefile
@@ -72,8 +72,8 @@ jobs:
           osx-version: "12.3"
       - uses: actions/checkout@v3
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.9.tar.gz
-          tar zxf unrarsrc-6.2.9.tar.gz
+          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
+          tar zxf unrarsrc-6.2.10.tar.gz
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i -E '/^(CXX|STRIP|AR)=/d' makefile
