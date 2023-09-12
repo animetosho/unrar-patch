@@ -3,7 +3,7 @@
 This repository provides a quick-n-dirty patch to enable the SSE code to compile in GCC/Clang, which allows these speed ups to be present in non-Windows builds.
 UnRAR also includes AES acceleration code for ARM, but it isn’t enabled by default. This patch also enables this acceleration.
 
-The [releases page](https://github.com/animetosho/unrar-patch/releases) hosts MacOS and static Linux builds for x64/ARM64 platforms.
+The [releases page](https://github.com/animetosho/unrar-patch/releases) hosts MacOS and static Linux builds for x64/ARM64 platforms, plus Windows ARM64.
 
 See [the original UnRAR page](https://www.rarlab.com/rar_add.htm) for more info on UnRAR.
 
