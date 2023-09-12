@@ -14,6 +14,7 @@ jobs:
           tar -xf unrarsrc-6.2.10.tar.gz
           cd unrar
           "C:\Program Files\Git\usr\bin\patch.exe" -s -p1 < ..\unrar-gcc.patch
+          "C:\Program Files\Git\usr\bin\patch.exe" -s -p1 < ..\unrar-vcx.patch
         shell: cmd
       - run: msbuild -property:Configuration=Release -property:Platform=ARM64 UnRAR.vcxproj
         working-directory: unrar
@@ -24,6 +25,7 @@ jobs:
           name: unrar-windows-arm64.7z
           retention-days: 5
       - run: rmdir /s /q unrar\ARM64
+        shell: cmd
       - run: msbuild -property:Configuration=Release -property:Platform=ARM64 UnRARDll.vcxproj
         working-directory: unrar
       - run: move "unrar\ARM64\Release\unrar.dll" unrar.dll && move "unrar\ARM64\Release\UnRAR.lib" UnRAR.lib && move "unrar\ARM64\Release\UnRAR.pdb" UnRAR.pdb && 7z a -t7z -mx=9 unrar-dll.7z unrar.dll UnRAR.lib UnRAR.pdb

@@ -20,3 +20,4 @@ patch -s -p1 < ../unrar-gcc.patch
 make
 ```
 
+Note: the *unrar-vcx.patch* file is for patching the Visual C++ project files (*.vcxproj) for building Windows ARM64 binaries. If you wish to build these, you’ll need to apply both patches. As the .vcxproj files use Windows newlines, you may need to be careful with applying the vcx patch, as Unix tools don’t often like Windows newlines.
