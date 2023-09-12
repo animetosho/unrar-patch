@@ -5,20 +5,28 @@ on:
 jobs:
   build-win-arm:
     name: Build Windows ARM64 binary
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: actions/checkout@v3
+      - run: |
+          aria2c https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
+          tar -xf unrarsrc-6.2.10.tar.gz
+          cd unrar
+          "C:\Program Files\Git\usr\bin\patch.exe" -s -p1 < ..\unrar-gcc.patch
+        shell: cmd
       - run: msbuild -property:Configuration=Release -property:Platform=ARM64 UnRAR.vcxproj
-      - run: move "ARM64\Release\UnRAR.exe" UnRAR.exe && 7z a -t7z -mx=9 unrar.7z UnRAR.exe
+        working-directory: unrar
+      - run: move "unrar\ARM64\Release\UnRAR.exe" UnRAR.exe && 7z a -t7z -mx=9 unrar.7z UnRAR.exe
       - uses: actions/upload-artifact@v3
         with:
           path: ./unrar.7z
           name: unrar-windows-arm64.7z
           retention-days: 5
-      - run: rmdir /s /q ARM64
+      - run: rmdir /s /q unrar\ARM64
       - run: msbuild -property:Configuration=Release -property:Platform=ARM64 UnRARDll.vcxproj
-      - run: move "ARM64\Release\unrar.dll" unrar.dll && move "ARM64\Release\UnRAR.lib" UnRAR.lib && move "ARM64\Release\UnRAR.pdb" UnRAR.pdb && 7z a -t7z -mx=9 unrar-dll.7z unrar.dll UnRAR.lib UnRAR.pdb
+        working-directory: unrar
+      - run: move "unrar\ARM64\Release\unrar.dll" unrar.dll && move "unrar\ARM64\Release\UnRAR.lib" UnRAR.lib && move "unrar\ARM64\Release\UnRAR.pdb" UnRAR.pdb && 7z a -t7z -mx=9 unrar-dll.7z unrar.dll UnRAR.lib UnRAR.pdb
       - uses: actions/upload-artifact@v3
         with:
           path: ./unrar-dll.7z
