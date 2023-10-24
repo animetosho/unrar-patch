@@ -10,8 +10,8 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: actions/checkout@v3
       - run: |
-          aria2c https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
-          tar -xf unrarsrc-6.2.10.tar.gz
+          aria2c https://www.rarlab.com/rar/unrarsrc-7.0.1.tar.gz
+          tar -xf unrarsrc-7.0.1.tar.gz
           cd unrar
           "C:\Program Files\Git\usr\bin\patch.exe" -s -p1 < ..\unrar-gcc.patch
           "C:\Program Files\Git\usr\bin\patch.exe" -s -p1 < ..\unrar-vcx.patch
@@ -55,8 +55,8 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
-          tar zxf unrarsrc-6.2.10.tar.gz
+          wget https://www.rarlab.com/rar/unrarsrc-7.0.1.tar.gz
+          tar zxf unrarsrc-7.0.1.tar.gz
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i -E '/^(CXX|STRIP|AR)=/d' makefile
@@ -82,8 +82,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
-          tar zxf unrarsrc-6.2.10.tar.gz
+          wget https://www.rarlab.com/rar/unrarsrc-7.0.1.tar.gz
+          tar zxf unrarsrc-7.0.1.tar.gz
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i .old 's/^CXXFLAGS=/CXXFLAGS=-std=c++11 /' makefile
@@ -106,8 +106,8 @@ jobs:
           osx-version: "12.3"
       - uses: actions/checkout@v3
       - run: |
-          wget https://www.rarlab.com/rar/unrarsrc-6.2.10.tar.gz
-          tar zxf unrarsrc-6.2.10.tar.gz
+          wget https://www.rarlab.com/rar/unrarsrc-7.0.1.tar.gz
+          tar zxf unrarsrc-7.0.1.tar.gz
           cd unrar
           patch -s -p1 < ../unrar-gcc.patch
           sed -i -E '/^(CXX|STRIP|AR)=/d' makefile
