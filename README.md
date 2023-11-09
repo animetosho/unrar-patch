@@ -1,3 +1,13 @@
+### UnRAR 7.0 includes modifications which makes this patch (largely) obsolete. It is recommended that you use UnRAR 7.0 instead of this patch.
+
+This repository is left for historical reference (or if you need a build for Windows on ARM). Original README follows.
+
+
+
+---
+
+
+
 [UnRAR](https://www.rarlab.com/rar_add.htm) includes SSE code to speed up AES/RS16/BLAKE2 computation, however it’s only enabled for Windows x86/x64 builds.
 
 This repository provides a quick-n-dirty patch to enable the SSE code to compile in GCC/Clang, which allows these speed ups to be present in non-Windows builds.
